@@ -1,0 +1,236 @@
+/* Structural styles shared by every theme. Themes override colors, type,
+   and spacing via CSS variables — they should rarely need to touch layout. */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+.wrap {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ---- header / nav ---- */
+
+.site-header {
+  padding: 40px 0 24px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 40px;
+}
+
+.site-title {
+  font-family: var(--font-display);
+  font-size: 28px;
+  letter-spacing: var(--title-tracking, normal);
+  text-transform: var(--title-case, none);
+  margin: 0 0 14px;
+}
+.site-title a {
+  color: var(--text);
+}
+.site-title a:hover {
+  text-decoration: none;
+}
+
+.site-nav {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  font-family: var(--font-nav);
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.site-nav a {
+  color: var(--text-muted);
+  padding-bottom: 2px;
+}
+.site-nav a:hover,
+.site-nav a[aria-current="page"] {
+  color: var(--text);
+  border-bottom: 1px solid var(--accent);
+  text-decoration: none;
+}
+
+.site-footer {
+  margin-top: 80px;
+  padding: 30px 0 60px;
+  border-top: 1px solid var(--line);
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+/* ---- portfolio grid ---- */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+}
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+.grid-item {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: var(--line);
+}
+.grid-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease, filter 0.4s ease;
+}
+.grid-item:hover img {
+  transform: scale(1.04);
+}
+.grid-item .grid-caption {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 10px 12px;
+  font-size: 12px;
+  color: #fff;
+  background: linear-gradient(to top, rgba(0,0,0,0.55), transparent);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.grid-item:hover .grid-caption {
+  opacity: 1;
+}
+
+/* ---- post list (writing) ---- */
+
+.post-list {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.post-list-item {
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--line);
+}
+.post-list-item:last-child {
+  border-bottom: none;
+}
+.post-list-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  margin: 0 0 6px;
+}
+.post-meta {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.post-excerpt {
+  color: var(--text-muted);
+}
+
+/* ---- tag pills ---- */
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0;
+}
+.tag-pill {
+  font-size: 12px;
+  padding: 3px 10px;
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  color: var(--text-muted);
+}
+.tag-pill:hover {
+  color: var(--text);
+  border-color: var(--accent);
+  text-decoration: none;
+}
+
+/* ---- single post ---- */
+
+.post-header {
+  margin-bottom: 32px;
+}
+.post-header h1 {
+  font-family: var(--font-display);
+  font-size: 34px;
+  margin: 0 0 10px;
+  line-height: 1.2;
+}
+
+.post-body {
+  font-size: 18px;
+}
+.post-body p {
+  margin: 0 0 22px;
+}
+.post-body img {
+  margin: 28px 0;
+  width: 100%;
+}
+.post-body h2 {
+  font-family: var(--font-display);
+  margin-top: 44px;
+}
+.post-body blockquote {
+  margin: 28px 0;
+  padding-left: 18px;
+  border-left: 2px solid var(--accent);
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* ---- home ---- */
+
+.home-hero {
+  margin-bottom: 56px;
+}
+.home-hero p {
+  color: var(--text-muted);
+  max-width: 60ch;
+}
+.home-section-title {
+  font-family: var(--font-nav);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.home-section {
+  margin-bottom: 56px;
+}

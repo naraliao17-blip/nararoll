@@ -1,0 +1,30 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+
+const allPosts = (await getCollection('posts')).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+---
+
+<Layout title="Writing">
+  <h1 class="post-list-title" style="font-size:26px; margin-bottom:24px;">Writing</h1>
+  <div class="post-list">
+    {allPosts.map((post) => (
+      <article class="post-list-item">
+        <h2 class="post-list-title"><a href={`/posts/${post.slug}`}>{post.data.title}</a></h2>
+        <p class="post-meta">
+          {post.data.date.toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}
+        </p>
+        {post.data.tags.length > 0 && (
+          <p class="tag-list">
+            {post.data.tags.map((tag: string) => (
+              <a class="tag-pill" href={`/tags/${tag}`}>#{tag}</a>
+            ))}
+          </p>
+        )}
+        {post.data.excerpt && <p class="post-excerpt">{post.data.excerpt}</p>}
+      </article>
+    ))}
+  </div>
+</Layout>
