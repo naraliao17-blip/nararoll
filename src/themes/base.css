@@ -68,11 +68,11 @@ ul {
 }
 
 .sidebar-group-label {
-  margin: 28px 0 10px;
-  font-family: var(--font-nav);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  margin: 26px 0 10px;
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0;
 }
 .sidebar-group-label:first-child {
   margin-top: 0;
@@ -88,7 +88,8 @@ ul {
   margin-bottom: 9px;
 }
 .sidebar-nav ul li a {
-  font-size: 14px;
+  font-family: var(--font-display);
+  font-size: 15px;
   color: var(--text-muted);
   line-height: 1.4;
   display: inline-block;
