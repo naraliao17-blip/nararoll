@@ -1,0 +1,60 @@
+---
+// Shared by the homepage and /portfolio so the two never show different
+// groupings of the same photos. Series (grouped) show as one cover tile
+// linking to their own page; ungrouped photos show individually under
+// "Journal". If there are no series at all, every photo is shown flat with
+// no Journal label (nothing to distinguish it from).
+import { getCollection } from 'astro:content';
+import { slugify } from '../utils/slugify';
+
+export interface Props {
+  heading?: string;
+}
+const { heading } = Astro.props;
+
+const photoPosts = (await getCollection('posts'))
+  .filter((p) => p.data.cover && !p.data.hideFromPortfolio)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const seriesOrder: string[] = [];
+const seriesCover: Record<string, any> = {};
+photoPosts.forEach((p) => {
+  if (p.data.series) {
+    if (!seriesOrder.includes(p.data.series)) {
+      seriesOrder.push(p.data.series);
+      seriesCover[p.data.series] = p;
+    }
+  }
+});
+const journalPosts = photoPosts.filter((p) => !p.data.series);
+const hasSeries = seriesOrder.length > 0;
+---
+
+{heading && (
+  <h1 class="post-list-title" style="font-size:20px; margin-bottom:10vh; text-align:center;">{heading}</h1>
+)}
+
+{hasSeries && (
+  <div class="grid">
+    {seriesOrder.map((name) => (
+      <a class="grid-item" href={`/series/${slugify(name)}`}>
+        <img src={seriesCover[name].data.cover} alt={name} loading="lazy" />
+        <span class="grid-caption">{name}</span>
+      </a>
+    ))}
+  </div>
+)}
+
+{journalPosts.length > 0 && (
+  <div id="journal" class={hasSeries ? 'home-section' : undefined} style={hasSeries ? 'margin-top: 16vh;' : undefined}>
+    {hasSeries && <p class="home-section-title"><span>Journal</span></p>}
+    <div class="grid">
+      {journalPosts.map((post) => (
+        <a class="grid-item" href={`/posts/${post.slug}`}>
+          <img src={post.data.cover} alt={post.data.title} loading="lazy" />
+          <span class="grid-caption">{post.data.title}</span>
+        </a>
+      ))}
+    </div>
+  </div>
+)}

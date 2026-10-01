@@ -1,22 +1,8 @@
 ---
-import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
-
-// The homepage IS the works grid — no separate hero or preview sections,
-// matching the reference structure: sidebar + straight photo grid, nothing
-// else competing for attention.
-const photoPosts = (await getCollection('posts'))
-  .filter((p) => p.data.cover && !p.data.hideFromPortfolio)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+import WorksGrid from '../components/WorksGrid.astro';
 ---
 
 <Layout>
-  <div class="grid">
-    {photoPosts.map((post) => (
-      <a class="grid-item" href={`/posts/${post.slug}`}>
-        <img src={post.data.cover} alt={post.data.title} loading="lazy" />
-        <span class="grid-caption">{post.data.title}</span>
-      </a>
-    ))}
-  </div>
+  <WorksGrid />
 </Layout>
