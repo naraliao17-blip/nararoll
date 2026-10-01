@@ -1,23 +1,53 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
+import { slugify } from '../utils/slugify';
 
-// Every post with a cover photo shows up here automatically — no need to
-// maintain a separate photo list. Set `hideFromPortfolio: true` in a post's
-// frontmatter to keep a photo out of this grid.
+// Every post with a cover photo shows up here automatically. Give a post a
+// `series` name in its frontmatter to group it with others of the same
+// name; leave `series` blank for a one-off Journal entry.
 const photoPosts = (await getCollection('posts'))
   .filter((p) => p.data.cover && !p.data.hideFromPortfolio)
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const seriesOrder: string[] = [];
+const seriesCover: Record<string, any> = {};
+photoPosts.forEach((p) => {
+  if (p.data.series) {
+    if (!seriesOrder.includes(p.data.series)) {
+      seriesOrder.push(p.data.series);
+      seriesCover[p.data.series] = p;
+    }
+  }
+});
+const journalPosts = photoPosts.filter((p) => !p.data.series);
 ---
 
-<Layout title="Photography">
-  <h1 class="post-list-title" style="font-size:20px; margin-bottom:14vh; text-align:center;">Photography</h1>
-  <div class="grid">
-    {photoPosts.map((post) => (
-      <a class="grid-item" href={`/posts/${post.slug}`}>
-        <img src={post.data.cover} alt={post.data.title} loading="lazy" />
-        <span class="grid-caption">{post.data.title}</span>
-      </a>
-    ))}
-  </div>
+<Layout title="Works">
+  <h1 class="post-list-title" style="font-size:20px; margin-bottom:10vh; text-align:center;">Works</h1>
+
+  {seriesOrder.length > 0 && (
+    <div class="grid grid--staggered">
+      {seriesOrder.map((name) => (
+        <a class="grid-item" href={`/series/${slugify(name)}`}>
+          <img src={seriesCover[name].data.cover} alt={name} loading="lazy" />
+          <span class="grid-caption">{name}</span>
+        </a>
+      ))}
+    </div>
+  )}
+
+  {journalPosts.length > 0 && (
+    <div id="journal" class="home-section" style="margin-top: 16vh;">
+      <p class="home-section-title"><span>Journal</span></p>
+      <div class="grid">
+        {journalPosts.map((post) => (
+          <a class="grid-item" href={`/posts/${post.slug}`}>
+            <img src={post.data.cover} alt={post.data.title} loading="lazy" />
+            <span class="grid-caption">{post.data.title}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  )}
 </Layout>

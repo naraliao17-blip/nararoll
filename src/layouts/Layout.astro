@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { getCollection } from 'astro:content';
 import { siteConfig } from '../site.config';
+import { slugify } from '../utils/slugify';
 import '../themes/base.css';
 
 export interface Props {
@@ -19,14 +20,21 @@ const pageDescription = description || siteConfig.description;
 const themePath = path.resolve('./src/themes', `${siteConfig.theme}.css`);
 const themeCss = fs.readFileSync(themePath, 'utf-8');
 
-// The sidebar is the site's table of contents: every post listed directly,
-// grouped by whether it has a cover photo. This runs on every page since
-// the sidebar is shared chrome, not per-page content.
+// The sidebar is the site's table of contents. Photo posts split into named
+// Series (grouped) and one-off Journal entries; everything else is Writing.
+// This runs on every page since the sidebar is shared chrome.
 const allPosts = (await getCollection('posts')).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 );
 const photoPosts = allPosts.filter((p) => p.data.cover && !p.data.hideFromPortfolio);
 const writingPosts = allPosts.filter((p) => !p.data.cover || p.data.hideFromPortfolio);
+
+const seriesNames: string[] = [];
+photoPosts.forEach((p) => {
+  if (p.data.series && !seriesNames.includes(p.data.series)) seriesNames.push(p.data.series);
+});
+const journalPosts = photoPosts.filter((p) => !p.data.series);
+
 const currentPath = Astro.url.pathname.replace(/\/$/, '');
 ---
 
@@ -37,6 +45,12 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '');
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
     <meta name="description" content={pageDescription} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=EB+Garamond:ital@0;1&family=Jost:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
     <style set:html={themeCss} />
   </head>
   <body>
@@ -46,19 +60,24 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '');
 
         <nav class="sidebar-nav">
           <p class="sidebar-group-label">
-            <a href="/portfolio" aria-current={currentPath === '/portfolio' ? 'page' : undefined}>Photography</a>
+            <a href="/portfolio" aria-current={currentPath === '/portfolio' ? 'page' : undefined}>Works</a>
           </p>
           <ul>
-            {photoPosts.map((post) => (
+            {seriesNames.map((name) => (
               <li>
                 <a
-                  href={`/posts/${post.slug}`}
-                  aria-current={currentPath === `/posts/${post.slug}` ? 'page' : undefined}
+                  href={`/series/${slugify(name)}`}
+                  aria-current={currentPath === `/series/${slugify(name)}` ? 'page' : undefined}
                 >
-                  {post.data.title}
+                  {name}
                 </a>
               </li>
             ))}
+            {journalPosts.length > 0 && (
+              <li>
+                <a href="/portfolio#journal" class="sidebar-subtle">Journal</a>
+              </li>
+            )}
           </ul>
 
           <p class="sidebar-group-label">
@@ -78,7 +97,10 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '');
           </ul>
 
           <p class="sidebar-group-label">
-            <a href="/about" aria-current={currentPath === '/about' ? 'page' : undefined}>About</a>
+            <a href="/about" aria-current={currentPath === '/about' ? 'page' : undefined}>Profile</a>
+          </p>
+          <p class="sidebar-group-label">
+            <a href="/contact" aria-current={currentPath === '/contact' ? 'page' : undefined}>Contact</a>
           </p>
         </nav>
       </aside>

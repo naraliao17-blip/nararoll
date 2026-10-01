@@ -1,15 +1,19 @@
 /* Warm film / retro theme: cream paper, darkroom accent, grain texture. */
 
 :root {
-  --bg: #f2ece1;
+  --bg: #f4f3f0;
   --text: #2b2620;
-  --text-muted: #7a7060;
-  --line: #ddd3c1;
+  --text-muted: #85807a;
+  --line: #e2dfd9;
   --accent: #b5502f;
 
-  --font-display: Georgia, 'Iowan Old Style', 'Palatino Linotype', serif;
-  --font-body: Georgia, 'Iowan Old Style', 'Palatino Linotype', serif;
-  --font-nav: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  /* Close match to the thin, quiet serif on rinkokawauchi.com/en/ — Google
+     Fonts doesn't serve their exact licensed face, so this is the nearest
+     free equivalent. Swap the names here if you'd rather use something
+     else; nothing else needs to change. */
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'EB Garamond', Georgia, serif;
+  --font-nav: 'Jost', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
   --title-tracking: 0.01em;
 }

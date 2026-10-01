@@ -4,6 +4,7 @@ date: 2026-08-17
 tags: ["photo", "sri-lanka", "street"]
 cover: "/photos/doorway-kids.jpg"
 excerpt: "Two kids who didn't mind the camera, same roll, a different doorway."
+series: "Sri Lanka, 2026"
 ---
 
 No plan, just a doorway and two kids who let me stay a second longer than I expected.

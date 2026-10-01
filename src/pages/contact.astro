@@ -1,0 +1,18 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { siteConfig } from '../site.config';
+---
+
+<Layout title="Contact">
+  <div class="contact">
+    <h1 class="post-list-title" style="font-size:26px; margin: 0 0 32px;">Contact</h1>
+    <a class="contact-email" href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>
+    {siteConfig.social.length > 0 && (
+      <ul class="contact-social">
+        {siteConfig.social.map((s) => (
+          <li><a href={s.url} target="_blank" rel="noopener noreferrer">{s.label}</a></li>
+        ))}
+      </ul>
+    )}
+  </div>
+</Layout>

@@ -1,15 +1,16 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { siteConfig } from '../site.config';
 ---
 
-<Layout title="About">
-  <h1 class="post-list-title" style="font-size:26px; margin-bottom:24px;">About</h1>
-  <div class="post-body">
-    <p>
-      Write a couple of paragraphs about yourself here — this file is at
-      <code>src/pages/about.astro</code>. Everything between the
-      <code>&lt;div class="post-body"&gt;</code> tags is plain text you can edit
-      directly on GitHub.
-    </p>
+<Layout title="Profile">
+  <div class="profile">
+    {siteConfig.avatar && (
+      <img class="profile-avatar" src={siteConfig.avatar} alt={siteConfig.title} />
+    )}
+    <h1 class="post-list-title" style="font-size:26px; margin: 0 0 24px;">Profile</h1>
+    <div class="post-body">
+      {siteConfig.bio.split('\n\n').map((para) => <p>{para}</p>)}
+    </div>
   </div>
 </Layout>
