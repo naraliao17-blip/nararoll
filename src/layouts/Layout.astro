@@ -1,0 +1,107 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+import { getCollection } from 'astro:content';
+import { siteConfig } from '../site.config';
+import '../themes/base.css';
+
+export interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+const pageTitle = title ? `${title} — ${siteConfig.title}` : siteConfig.title;
+const pageDescription = description || siteConfig.description;
+
+// Load the active theme's CSS by reading the file at build time. To switch
+// themes, change `theme` in src/site.config.ts — nothing else to touch.
+const themePath = path.resolve('./src/themes', `${siteConfig.theme}.css`);
+const themeCss = fs.readFileSync(themePath, 'utf-8');
+
+// The sidebar is the site's table of contents: every post listed directly,
+// grouped by whether it has a cover photo. This runs on every page since
+// the sidebar is shared chrome, not per-page content.
+const allPosts = (await getCollection('posts')).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+const photoPosts = allPosts.filter((p) => p.data.cover && !p.data.hideFromPortfolio);
+const writingPosts = allPosts.filter((p) => !p.data.cover || p.data.hideFromPortfolio);
+const currentPath = Astro.url.pathname.replace(/\/$/, '');
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <style set:html={themeCss} />
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar">
+        <p class="sidebar-title"><a href="/">{siteConfig.title}</a></p>
+
+        <nav class="sidebar-nav">
+          <p class="sidebar-group-label">
+            <a href="/portfolio" aria-current={currentPath === '/portfolio' ? 'page' : undefined}>Photography</a>
+          </p>
+          <ul>
+            {photoPosts.map((post) => (
+              <li>
+                <a
+                  href={`/posts/${post.slug}`}
+                  aria-current={currentPath === `/posts/${post.slug}` ? 'page' : undefined}
+                >
+                  {post.data.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          <p class="sidebar-group-label">
+            <a href="/writing" aria-current={currentPath === '/writing' ? 'page' : undefined}>Writing</a>
+          </p>
+          <ul>
+            {writingPosts.map((post) => (
+              <li>
+                <a
+                  href={`/posts/${post.slug}`}
+                  aria-current={currentPath === `/posts/${post.slug}` ? 'page' : undefined}
+                >
+                  {post.data.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          <p class="sidebar-group-label">
+            <a href="/about" aria-current={currentPath === '/about' ? 'page' : undefined}>About</a>
+          </p>
+        </nav>
+      </aside>
+
+      <div class="content">
+        <main>
+          <slot />
+        </main>
+
+        <footer class="site-footer">
+          <p>{siteConfig.title} — film photography and writing.</p>
+        </footer>
+      </div>
+    </div>
+
+    <button id="to-top" aria-label="Scroll to top">↑</button>
+
+    <script>
+      const btn = document.getElementById('to-top');
+      const toggle = () => btn?.classList.toggle('visible', window.scrollY > 400);
+      window.addEventListener('scroll', toggle, { passive: true });
+      toggle();
+      btn?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    </script>
+  </body>
+</html>

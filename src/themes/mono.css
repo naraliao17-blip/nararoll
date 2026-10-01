@@ -1,0 +1,23 @@
+/* Minimal black & white theme: high contrast, tight type, no color. */
+
+:root {
+  --bg: #fff;
+  --text: #111;
+  --text-muted: #767676;
+  --line: #e4e4e4;
+  --accent: #111;
+
+  --font-display: 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'Helvetica Neue', Arial, sans-serif;
+  --font-nav: 'Helvetica Neue', Arial, sans-serif;
+
+  --title-tracking: -0.01em;
+}
+
+.site-title {
+  font-weight: 700;
+}
+
+.grid-item img {
+  filter: grayscale(1) contrast(1.05);
+}
