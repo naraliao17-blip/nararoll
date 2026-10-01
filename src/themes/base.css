@@ -167,24 +167,6 @@ ul {
   margin: 0;
 }
 
-/* name-mark hero: the site name set large, Rinko-Kawauchi-style */
-.home-hero--mark {
-  margin: 4vh 0 14vh;
-  max-width: none;
-}
-.home-mark {
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: clamp(42px, 8vw, 88px);
-  line-height: 1.05;
-  letter-spacing: 0.01em;
-  margin: 0 0 20px;
-}
-.home-hero--mark p {
-  font-size: 16px;
-  font-family: var(--font-nav);
-  letter-spacing: 0.02em;
-}
 
 .home-section {
   margin-bottom: 18vh;
@@ -232,20 +214,6 @@ ul {
   color: var(--text-muted);
 }
 
-/* staggered variant: every 5th item runs wider, for the varied, non-grid
-   rhythm of a curated wall rather than a uniform contact sheet. */
-.grid--staggered .grid-item:nth-child(5n+1) {
-  column-span: all;
-  max-width: 62%;
-  margin: 0 auto 20px;
-}
-@media (max-width: 720px) {
-  .grid--staggered .grid-item:nth-child(5n+1) {
-    column-span: none;
-    max-width: none;
-    margin: 0 0 20px;
-  }
-}
 
 /* ---- post list (writing) ---- */
 

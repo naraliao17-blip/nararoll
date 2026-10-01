@@ -1,52 +1,22 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
-import { siteConfig } from '../site.config';
 
-const allPosts = (await getCollection('posts')).sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
-);
-
-const photoPosts = allPosts.filter((p) => p.data.cover && !p.data.hideFromPortfolio).slice(0, 8);
-const recentPosts = allPosts.slice(0, 4);
+// The homepage IS the works grid — no separate hero or preview sections,
+// matching the reference structure: sidebar + straight photo grid, nothing
+// else competing for attention.
+const photoPosts = (await getCollection('posts'))
+  .filter((p) => p.data.cover && !p.data.hideFromPortfolio)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 
 <Layout>
-  <section class="home-hero home-hero--mark">
-    <h1 class="home-mark">{siteConfig.title}</h1>
-    <p>{siteConfig.description}</p>
-  </section>
-
-  <section class="home-section">
-    <p class="home-section-title">
-      <span>Works</span>
-      <a href="/portfolio">View all →</a>
-    </p>
-    <div class="grid grid--staggered">
-      {photoPosts.map((post) => (
-        <a class="grid-item" href={`/posts/${post.slug}`}>
-          <img src={post.data.cover} alt={post.data.title} loading="lazy" />
-          <span class="grid-caption">{post.data.title}</span>
-        </a>
-      ))}
-    </div>
-  </section>
-
-  <section class="home-section">
-    <p class="home-section-title">
-      <span>Writing</span>
-      <a href="/writing">View all →</a>
-    </p>
-    <div class="post-list">
-      {recentPosts.map((post) => (
-        <article class="post-list-item">
-          <h2 class="post-list-title"><a href={`/posts/${post.slug}`}>{post.data.title}</a></h2>
-          <p class="post-meta">
-            {post.data.date.toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}
-          </p>
-          {post.data.excerpt && <p class="post-excerpt">{post.data.excerpt}</p>}
-        </article>
-      ))}
-    </div>
-  </section>
+  <div class="grid">
+    {photoPosts.map((post) => (
+      <a class="grid-item" href={`/posts/${post.slug}`}>
+        <img src={post.data.cover} alt={post.data.title} loading="lazy" />
+        <span class="grid-caption">{post.data.title}</span>
+      </a>
+    ))}
+  </div>
 </Layout>

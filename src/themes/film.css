@@ -1,10 +1,10 @@
 /* Warm film / retro theme: cream paper, darkroom accent, grain texture. */
 
 :root {
-  --bg: #f4f3f0;
-  --text: #2b2620;
-  --text-muted: #85807a;
-  --line: #e2dfd9;
+  --bg: #fbfaf9;
+  --text: #211e1a;
+  --text-muted: #8c8882;
+  --line: #ebe9e5;
   --accent: #b5502f;
 
   /* Close match to the thin, quiet serif on rinkokawauchi.com/en/ — Google
@@ -18,11 +18,6 @@
   --title-tracking: 0.01em;
 }
 
-body {
-  background-image: radial-gradient(rgba(0,0,0,0.02) 1px, transparent 1px);
-  background-size: 3px 3px;
-}
-
 .grid-item img {
-  filter: sepia(0.15) contrast(1.02);
+  filter: sepia(0.08) contrast(1.02);
 }
