@@ -31,15 +31,14 @@ const hasSeries = seriesOrder.length > 0;
 ---
 
 {heading && (
-  <h1 class="post-list-title" style="font-size:20px; margin-bottom:10vh; text-align:center;">{heading}</h1>
+  <h1 class="hero-title" style="margin-bottom: 8vh;">{heading}</h1>
 )}
 
 {hasSeries && (
   <div class="grid">
     {seriesOrder.map((name) => (
-      <a class="grid-item" href={`/series/${slugify(name)}`}>
+      <a class="grid-item" href={`/series/${slugify(name)}`} title={name}>
         <img src={seriesCover[name].data.cover} alt={name} loading="lazy" />
-        <span class="grid-caption">{name}</span>
       </a>
     ))}
   </div>
@@ -50,9 +49,8 @@ const hasSeries = seriesOrder.length > 0;
     {hasSeries && <p class="home-section-title"><span>Journal</span></p>}
     <div class="grid">
       {journalPosts.map((post) => (
-        <a class="grid-item" href={`/posts/${post.slug}`}>
+        <a class="grid-item" href={`/posts/${post.slug}`} title={post.data.title}>
           <img src={post.data.cover} alt={post.data.title} loading="lazy" />
-          <span class="grid-caption">{post.data.title}</span>
         </a>
       ))}
     </div>

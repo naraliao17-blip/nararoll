@@ -1,8 +1,51 @@
 ---
+// The homepage is the "currently showing" work — the latest series, shown
+// large with no grid chrome. If nothing is grouped into a series yet, it
+// falls back to the latest journal photo; if there are no photos at all, a
+// quiet pointer to Writing instead of an empty page.
+import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
-import WorksGrid from '../components/WorksGrid.astro';
+import { slugify } from '../utils/slugify';
+
+const photoPosts = (await getCollection('posts'))
+  .filter((p) => p.data.cover && !p.data.hideFromPortfolio)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const latestSeries = photoPosts.find((p) => p.data.series)?.data.series;
+const heroPosts = latestSeries
+  ? photoPosts.filter((p) => p.data.series === latestSeries)
+  : photoPosts.slice(0, 1);
+
+const heroYear = heroPosts.length
+  ? new Date(Math.min(...heroPosts.map((p) => p.data.date.getTime()))).getFullYear()
+  : null;
 ---
 
 <Layout>
-  <WorksGrid />
+  {heroPosts.length > 0 ? (
+    <>
+      <section class="hero">
+        <h1 class="hero-title">
+          {latestSeries ? (
+            <a href={`/series/${slugify(latestSeries)}`}>{latestSeries}</a>
+          ) : (
+            <a href={`/posts/${heroPosts[0].slug}`}>{heroPosts[0].data.title}</a>
+          )}
+        </h1>
+        {heroYear && <p class="hero-year">{heroYear}</p>}
+      </section>
+
+      <div class="hero-images">
+        {heroPosts.map((post) => (
+          <a href={`/posts/${post.slug}`}>
+            <img src={post.data.cover} alt={post.data.title} loading="lazy" />
+          </a>
+        ))}
+      </div>
+    </>
+  ) : (
+    <section class="hero">
+      <p class="hero-year">Nothing posted yet — start with <a href="/writing">Writing</a>.</p>
+    </section>
+  )}
 </Layout>

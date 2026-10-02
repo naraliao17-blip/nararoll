@@ -19,7 +19,7 @@ const { tag, posts } = Astro.props;
 ---
 
 <Layout title={`#${tag}`}>
-  <h1 class="post-list-title" style="font-size:20px; margin-bottom:14vh; text-align:center;">#{tag}</h1>
+  <h1 class="hero-title" style="margin-bottom: 10vh;">#{tag}</h1>
   <div class="post-list">
     {posts.map((post: any) => (
       <article class="post-list-item">

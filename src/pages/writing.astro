@@ -8,7 +8,7 @@ const allPosts = (await getCollection('posts')).sort(
 ---
 
 <Layout title="Writing">
-  <h1 class="post-list-title" style="font-size:20px; margin-bottom:14vh; text-align:center;">Writing</h1>
+  <h1 class="hero-title" style="margin-bottom: 10vh;">Writing</h1>
   <div class="post-list">
     {allPosts.map((post) => (
       <article class="post-list-item">

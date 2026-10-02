@@ -6,6 +6,7 @@
   --text-muted: #6b6b6b;
   --line: #eaeaea;
   --accent: #1a4d3e;
+  --menu-bg: #ececea;
 
   --font-display: 'Times New Roman', Georgia, serif;
   --font-body: 'Times New Roman', Georgia, serif;
@@ -13,10 +14,6 @@
 
   --title-case: uppercase;
   --title-tracking: 0.06em;
-}
-
-.site-title {
-  font-weight: 400;
 }
 
 .post-header h1 {

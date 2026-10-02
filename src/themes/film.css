@@ -6,6 +6,9 @@
   --text-muted: #8c8882;
   --line: #ebe9e5;
   --accent: #b5502f;
+  /* Pale cool grey the full-screen Menu opens into — a deliberate shift
+     away from the warm page background, like rinkokawauchi.com/en/'s menu. */
+  --menu-bg: #e9edec;
 
   /* Close match to the thin, quiet serif on rinkokawauchi.com/en/ — Google
      Fonts doesn't serve their exact licensed face, so this is the nearest

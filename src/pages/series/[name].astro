@@ -19,15 +19,21 @@ export async function getStaticPaths() {
 }
 
 const { name, posts } = Astro.props;
+const year = posts.length
+  ? new Date(Math.min(...posts.map((p: any) => p.data.date.getTime()))).getFullYear()
+  : null;
 ---
 
 <Layout title={name}>
-  <h1 class="post-list-title" style="font-size:20px; margin-bottom:14vh; text-align:center;">{name}</h1>
-  <div class="grid">
+  <section class="hero">
+    <h1 class="hero-title">{name}</h1>
+    {year && <p class="hero-year">{year}</p>}
+  </section>
+
+  <div class="grid-2col">
     {posts.map((post: any) => (
-      <a class="grid-item" href={`/posts/${post.slug}`}>
+      <a href={`/posts/${post.slug}`} title={post.data.title}>
         <img src={post.data.cover} alt={post.data.title} loading="lazy" />
-        <span class="grid-caption">{post.data.title}</span>
       </a>
     ))}
   </div>

@@ -20,9 +20,9 @@ const pageDescription = description || siteConfig.description;
 const themePath = path.resolve('./src/themes', `${siteConfig.theme}.css`);
 const themeCss = fs.readFileSync(themePath, 'utf-8');
 
-// The sidebar is the site's table of contents. Photo posts split into named
-// Series (grouped) and one-off Journal entries; everything else is Writing.
-// This runs on every page since the sidebar is shared chrome.
+// The Menu overlay is the site's table of contents. Photo posts split into
+// named Series (grouped) and one-off Journal entries; everything else is
+// Writing. This runs on every page since the menu is shared chrome.
 const allPosts = (await getCollection('posts')).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 );
@@ -55,71 +55,93 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '');
     <style set:html={themeCss} />
   </head>
   <body>
-    <div class="shell">
-      <aside class="sidebar">
-        <p class="sidebar-title"><a href="/">{siteConfig.title}</a></p>
+    <header class="topbar">
+      <a class="topbar-title" href="/">{siteConfig.title}</a>
+      <button id="menu-open" class="topbar-link" aria-haspopup="true" aria-expanded="false" aria-controls="menu-overlay">Menu</button>
+    </header>
 
-        <nav class="sidebar-nav">
-          <p class="sidebar-group-label">
-            <a href="/portfolio" aria-current={currentPath === '/portfolio' ? 'page' : undefined}>Works</a>
-          </p>
-          <ul>
-            {seriesNames.map((name) => (
-              <li>
-                <a
-                  href={`/series/${slugify(name)}`}
-                  aria-current={currentPath === `/series/${slugify(name)}` ? 'page' : undefined}
-                >
-                  {name}
-                </a>
-              </li>
-            ))}
-            {journalPosts.length > 0 && (
-              <li>
-                <a href="/portfolio#journal" class="sidebar-subtle">Journal</a>
-              </li>
-            )}
-          </ul>
-
-          <p class="sidebar-group-label">
-            <a href="/writing" aria-current={currentPath === '/writing' ? 'page' : undefined}>Writing</a>
-          </p>
-          <ul>
-            {writingPosts.map((post) => (
-              <li>
-                <a
-                  href={`/posts/${post.slug}`}
-                  aria-current={currentPath === `/posts/${post.slug}` ? 'page' : undefined}
-                >
-                  {post.data.title}
-                </a>
-              </li>
-            ))}
-          </ul>
-
-          <p class="sidebar-group-label">
-            <a href="/about" aria-current={currentPath === '/about' ? 'page' : undefined}>Profile</a>
-          </p>
-          <p class="sidebar-group-label">
-            <a href="/contact" aria-current={currentPath === '/contact' ? 'page' : undefined}>Contact</a>
-          </p>
-        </nav>
-      </aside>
-
-      <div class="content">
-        <main>
-          <slot />
-        </main>
-
-        <footer class="site-footer">
-          <p>{siteConfig.title} — film photography and writing.</p>
-        </footer>
+    <nav id="menu-overlay" class="menu-overlay" aria-hidden="true">
+      <div class="topbar menu-overlay-top">
+        <a class="topbar-title" href="/">{siteConfig.title}</a>
+        <button id="menu-close" class="topbar-link">Close</button>
       </div>
-    </div>
+
+      <div class="menu-columns">
+        <div class="menu-col-main">
+          <p><a href="/portfolio" aria-current={currentPath === '/portfolio' ? 'page' : undefined}>Works</a></p>
+          <p><a href="/writing" aria-current={currentPath === '/writing' ? 'page' : undefined}>Writing</a></p>
+          <p><a href="/about" aria-current={currentPath === '/about' ? 'page' : undefined}>Profile</a></p>
+          <p><a href="/contact" aria-current={currentPath === '/contact' ? 'page' : undefined}>Contact</a></p>
+        </div>
+
+        <div class="menu-col-sub">
+          {(seriesNames.length > 0 || journalPosts.length > 0) && (
+            <div class="menu-sub-group">
+              {seriesNames.map((name) => (
+                <p>
+                  <a
+                    href={`/series/${slugify(name)}`}
+                    aria-current={currentPath === `/series/${slugify(name)}` ? 'page' : undefined}
+                  >
+                    {name}
+                  </a>
+                </p>
+              ))}
+              {journalPosts.length > 0 && (
+                <p><a href="/portfolio#journal">Journal</a></p>
+              )}
+            </div>
+          )}
+
+          {writingPosts.length > 0 && (
+            <div class="menu-sub-group">
+              {writingPosts.map((post) => (
+                <p>
+                  <a
+                    href={`/posts/${post.slug}`}
+                    aria-current={currentPath === `/posts/${post.slug}` ? 'page' : undefined}
+                  >
+                    {post.data.title}
+                  </a>
+                </p>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </nav>
+
+    <main class="page">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <p>{siteConfig.title} — film photography and writing.</p>
+    </footer>
 
     <button id="to-top" aria-label="Scroll to top">↑</button>
 
     <script>
+      const openBtn = document.getElementById('menu-open');
+      const closeBtn = document.getElementById('menu-close');
+      const overlay = document.getElementById('menu-overlay');
+
+      const setOpen = (open: boolean) => {
+        overlay?.classList.toggle('open', open);
+        overlay?.setAttribute('aria-hidden', open ? 'false' : 'true');
+        openBtn?.setAttribute('aria-expanded', open ? 'true' : 'false');
+        document.body.classList.toggle('menu-locked', open);
+      };
+
+      openBtn?.addEventListener('click', () => setOpen(true));
+      closeBtn?.addEventListener('click', () => setOpen(false));
+      overlay?.addEventListener('click', (e) => {
+        if (e.target === overlay) setOpen(false);
+      });
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') setOpen(false);
+      });
+
       const btn = document.getElementById('to-top');
       const toggle = () => btn?.classList.toggle('visible', window.scrollY > 400);
       window.addEventListener('scroll', toggle, { passive: true });
