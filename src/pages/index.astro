@@ -1,10 +1,12 @@
 ---
 // The homepage is the "currently showing" work — the latest series, shown
-// large with no grid chrome. If nothing is grouped into a series yet, it
-// falls back to the latest journal photo; if there are no photos at all, a
-// quiet pointer to Writing instead of an empty page.
+// large with no grid chrome. Display style ('single' full-bleed image or a
+// 'grid' of up to four) is set in src/site.config.ts. Clicking any image
+// opens that series' page, not the individual post — the homepage is a
+// doorway into the series, like a gallery wall.
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
+import { siteConfig } from '../site.config';
 import { slugify } from '../utils/slugify';
 
 const photoPosts = (await getCollection('posts'))
@@ -19,29 +21,44 @@ const heroPosts = latestSeries
 const heroYear = heroPosts.length
   ? new Date(Math.min(...heroPosts.map((p) => p.data.date.getTime()))).getFullYear()
   : null;
+
+// Every image on the homepage links to the series as a whole (the doorway
+// behaviour), falling back to the single post itself when there's no series
+// to link to yet.
+const heroHref = latestSeries
+  ? `/series/${slugify(latestSeries)}`
+  : heroPosts[0]
+    ? `/posts/${heroPosts[0].slug}`
+    : null;
+
+const displayPosts = siteConfig.homepageStyle === 'grid' ? heroPosts.slice(0, 4) : heroPosts.slice(0, 1);
 ---
 
 <Layout>
-  {heroPosts.length > 0 ? (
+  {heroPosts.length > 0 && heroHref ? (
     <>
       <section class="hero">
         <h1 class="hero-title">
-          {latestSeries ? (
-            <a href={`/series/${slugify(latestSeries)}`}>{latestSeries}</a>
-          ) : (
-            <a href={`/posts/${heroPosts[0].slug}`}>{heroPosts[0].data.title}</a>
-          )}
+          <a href={heroHref}>{latestSeries ?? heroPosts[0].data.title}</a>
         </h1>
         {heroYear && <p class="hero-year">{heroYear}</p>}
       </section>
 
-      <div class="hero-images">
-        {heroPosts.map((post) => (
-          <a href={`/posts/${post.slug}`}>
-            <img src={post.data.cover} alt={post.data.title} loading="lazy" />
+      {siteConfig.homepageStyle === 'grid' ? (
+        <div class="grid-2col hero-grid">
+          {displayPosts.map((post) => (
+            <a href={heroHref} title={latestSeries ?? post.data.title}>
+              <img src={post.data.cover} alt={post.data.title} loading="lazy" />
+            </a>
+          ))}
+        </div>
+      ) : (
+        <div class="hero-images hero-single">
+          <a href={heroHref} title={latestSeries ?? displayPosts[0].data.title}>
+            <img class="hero-full" src={displayPosts[0].data.cover} alt={displayPosts[0].data.title} loading="lazy" />
           </a>
-        ))}
-      </div>
+        </div>
+      )}
     </>
   ) : (
     <section class="hero">

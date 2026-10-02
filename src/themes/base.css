@@ -230,7 +230,31 @@ body.menu-locked {
   height: auto;
 }
 
-/* ---- series detail page : large images, two columns, no captions ---- */
+/* homepage 'single' style: one large full-bleed image, cropped to fill a
+   tall frame rather than shown at its natural ratio — the one deliberate
+   exception to the site's usual no-crop rule, for a true hero moment. */
+.hero-single {
+  margin-bottom: 14vh;
+}
+.hero-full {
+  width: 100%;
+  height: 82vh;
+  object-fit: cover;
+  display: block;
+}
+@media (max-width: 720px) {
+  .hero-full {
+    height: 60vh;
+  }
+}
+
+/* homepage 'grid' style reuses .grid-2col but sits closer to the hero title */
+.hero-grid {
+  margin-bottom: 14vh;
+}
+
+/* ---- series detail page / homepage grid style : large images, two
+   columns, no captions, natural ratio (no crop) ---- */
 
 .grid-2col {
   display: grid;
